@@ -8,7 +8,6 @@
 
   let flat = [];                   // {vi, start, disp, search}
   let videos = [];                 // {id, title}
-  let meta = null;
 
   // overlay と共通の正規キー: "<video_id>@" + round(start*1000)
   const segKey = (vid, start) => vid + "@" + Math.round(start * 1000);
@@ -57,7 +56,6 @@
       return;
     }
 
-    meta = index;
     videos = index.videos.map((v) => ({ id: v.id, title: v.title || v.id }));
 
     // 任意: 承認済み訂正のオーバーレイ。あればマージ、無ければ無視。

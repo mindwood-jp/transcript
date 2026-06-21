@@ -10,30 +10,30 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="top">
-    <div class="top__inner">
-      <div class="brand">
-        <h1 class="brand__title">まるチャンネル文字起こし検索　ver 0.1.0（超簡易版）</h1>
-        <span class="brand__sub" id="corpusMeta"></span>
-      </div>
-      <div class="search">
-        <input id="q" class="search__input" type="search" autocomplete="off"
-               autocapitalize="off" spellcheck="false"
-               placeholder="キーワードを入力（全動画から部分一致で検索）" aria-label="検索キーワード">
-        <button id="clear" class="search__clear" type="button" aria-label="クリア">✕</button>
-      </div>
-    </div>
-    <p class="status" id="status" aria-live="polite"></p>
-  </div>
+	<div class="top">
+		<div class="top__inner">
+			<div class="brand">
+				<h1 class="brand__title">まるチャンネル文字起こし検索　ver 0.1.1（超簡易版）</h1>
+				<span class="brand__sub" id="corpusMeta"></span>
+			</div>
+			<div class="search">
+				<input id="q" class="search__input" type="search" autocomplete="off"
+							 autocapitalize="off" spellcheck="false"
+							 placeholder="キーワードを入力（全動画から部分一致で検索）" aria-label="検索キーワード">
+				<button id="clear" class="search__clear" type="button" aria-label="クリア">✕</button>
+			</div>
+		</div>
+		<p class="status" id="status" aria-live="polite"></p>
+	</div>
 
-  <main id="results">
-    <div class="note" id="boot">読み込んでいます…</div>
-  </main>
+	<main id="results">
+		<div class="note" id="boot">読み込んでいます…</div>
+	</main>
 
-  <footer id="footer">
-    <p class="disclaimer">掲載している文字起こしは YouTube の自動生成字幕を加工したもので、正確性を保証するものではありません。正確な内容は各動画の音声をご確認ください。当サイトは非公式のファンプロジェクトであり、チャンネル運営者および YouTube とは関係ありません。</p>
-    <p class="footer__meta" id="footerMeta"></p>
-  </footer>
+	<footer id="footer">
+		<p class="disclaimer">掲載している文字起こしは YouTube の自動生成字幕を加工したもので、正確性を保証するものではありません。正確な内容は各動画の音声をご確認ください。当サイトは非公式のファンプロジェクトであり、チャンネル運営者および YouTube とは関係ありません。</p>
+		<p class="footer__meta" id="footerMeta"></p>
+	</footer>
 
 <script src="app.js"></script>
 </body>
