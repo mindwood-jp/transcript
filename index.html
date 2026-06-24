@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>まるチャンネル文字起こし検索（超簡易版）</title>
+<title>まるチャンネル 文字起こし全文検索</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?260624">
 </head>
 <body>
 	<div class="top">
 		<div class="top__inner">
 			<div class="brand">
-				<h1 class="brand__title">まるチャンネル文字起こし検索　ver 0.1.1（超簡易版）</h1>
+				<h1 class="brand__title">まるチャンネル 文字起こし全文検索　ver 0.7.1</h1>
 				<span class="brand__sub" id="corpusMeta"></span>
 			</div>
 			<div class="search">
 				<input id="q" class="search__input" type="search" autocomplete="off"
-							 autocapitalize="off" spellcheck="false"
-							 placeholder="キーワードを入力（全動画から部分一致で検索）" aria-label="検索キーワード">
+					autocapitalize="off" spellcheck="false"
+					placeholder="キーワードを入力（全動画から部分一致で検索）" aria-label="検索キーワード">
 				<button id="clear" class="search__clear" type="button" aria-label="クリア">✕</button>
 			</div>
 		</div>
@@ -35,6 +35,23 @@
 		<p class="footer__meta" id="footerMeta"></p>
 	</footer>
 
-<script src="app.js"></script>
+	<!-- 修正提案モーダル（既定で非表示） -->
+	<div id="proposeModal" class="modal" hidden>
+		<div class="modal__backdrop" data-close></div>
+		<div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="proposeTitle">
+			<h2 class="modal__title" id="proposeTitle">修正提案</h2>
+			<p class="modal__hint">下のテキストを直して「GitHub で提案」を押すと、GitHub の提案ページが新しいタブで開きます。最終的な投稿は GitHub 側で行います（GitHub アカウントが必要です）。</p>
+			<div class="modal__label">原文（表示中のテキスト）</div>
+			<div class="modal__original" id="proposeOriginal"></div>
+			<div class="modal__label">修正後</div>
+			<textarea id="proposeText" class="modal__text" rows="4" spellcheck="false" aria-label="修正後のテキスト"></textarea>
+			<div class="modal__actions">
+				<button type="button" class="btn btn--ghost" data-close>キャンセル</button>
+				<button type="button" class="btn btn--primary" id="proposeSubmit">GitHub で提案</button>
+			</div>
+		</div>
+	</div>
+
+<script src="app.js?260624"></script>
 </body>
 </html>

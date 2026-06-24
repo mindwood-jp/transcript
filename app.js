@@ -1,6 +1,9 @@
 (() => {
   "use strict";
 
+  // ★ 修正提案の投稿先リポジトリ。実際の「ユーザー名/リポジトリ名」に変更してください。
+  const ISSUE_REPO = "mindwood-jp/transcript";
+
   const CAP = 800;                 // DOMに描画する最大ヒット件数（数え上げは全件）
   const el = (id) => document.getElementById(id);
   const qInput = el("q"), clearBtn = el("clear"), statusEl = el("status"),
@@ -8,6 +11,7 @@
 
   let flat = [];                   // {vi, start, disp, search}
   let videos = [];                 // {id, title}
+  const rowByKey = new Map();      // 描画中のヒット: key -> {vid, start, text}
 
   // overlay と共通の正規キー: "<video_id>@" + round(start*1000)
   const segKey = (vid, start) => vid + "@" + Math.round(start * 1000);
@@ -113,6 +117,7 @@
 
   function run() {
     const raw = qInput.value.trim();
+    rowByKey.clear();
     clearBtn.classList.toggle("is-on", raw.length > 0);
     history.replaceState(null, "", raw ? "#" + encodeURIComponent(raw) : location.pathname + location.search);
 
@@ -158,9 +163,14 @@
       for (const it of g.rows) {
         const t = Math.floor(it.start);
         const url = `${vurl}?t=${t}`;
+        const key = segKey(v.id, it.start);
+        rowByKey.set(key, { vid: v.id, start: it.start, text: it.disp });
         parts.push(
           `<li class="hit">` +
-          `<a class="ts" href="${url}" target="_blank" rel="noopener">${fmtTime(it.start)}</a>` +
+          `<div class="hit__meta">` +
+            `<a class="ts" href="${url}" target="_blank" rel="noopener">${fmtTime(it.start)}</a>` +
+            `<button class="propose" type="button" data-key="${escapeHTML(key)}" aria-label="この箇所の修正を提案">修正提案</button>` +
+          `</div>` +
           `<span class="snippet">${highlight(it.disp, it.search, q)}</span></li>`
         );
       }
@@ -171,6 +181,66 @@
     }
     resultsEl.innerHTML = parts.join("");
   }
+
+  // ---- 修正提案モーダル ----
+  const modal = el("proposeModal");
+  const propOriginal = el("proposeOriginal");
+  const propText = el("proposeText");
+  let propState = null;            // {key, vid, start, text}
+
+  function openPropose(key) {
+    const row = rowByKey.get(key);
+    if (!row) return;
+    propState = { key, vid: row.vid, start: row.start, text: row.text };
+    propOriginal.textContent = row.text;
+    propText.value = row.text;
+    modal.hidden = false;
+    propText.focus();
+  }
+
+  function closePropose() {
+    modal.hidden = true;
+    propState = null;
+  }
+
+  function submitPropose() {
+    if (!propState) return;
+    if (ISSUE_REPO.includes("OWNER/REPO")) {
+      alert("投稿先リポジトリが未設定です。app.js の ISSUE_REPO を設定してください。");
+      return;
+    }
+    const proposed = propText.value.trim();
+    if (!proposed) { alert("修正後のテキストを入力してください。"); return; }
+    if (proposed === propState.text.trim()) {
+      alert("本文が変更されていません。修正してから提案してください。");
+      return;
+    }
+    const title = `[修正提案] ${propState.key}`;
+    const body =
+      `key:      ${propState.key}\n` +
+      `video_id: ${propState.vid}\n` +
+      `start:    ${propState.start}\n` +
+      `--- original ---\n${propState.text}\n` +
+      `--- proposed ---\n${proposed}\n`;
+    const url = `https://github.com/${ISSUE_REPO}/issues/new`
+      + `?title=${encodeURIComponent(title)}`
+      + `&body=${encodeURIComponent(body)}`
+      + `&labels=correction`;
+    window.open(url, "_blank", "noopener");
+    closePropose();
+  }
+
+  resultsEl.addEventListener("click", (e) => {
+    const btn = e.target.closest(".propose");
+    if (btn) openPropose(btn.dataset.key);
+  });
+  modal.addEventListener("click", (e) => {
+    if (e.target.hasAttribute("data-close")) closePropose();
+  });
+  el("proposeSubmit").addEventListener("click", submitPropose);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.hidden) closePropose();
+  });
 
   // 入力（デバウンス）
   let timer = 0;
