@@ -7,13 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?260624">
+<link rel="stylesheet" href="styles.css?260628">
 </head>
 <body>
 	<div class="top">
 		<div class="top__inner">
 			<div class="brand">
-				<h1 class="brand__title">まるチャンネル 文字起こし全文検索　ver 0.7.1</h1>
+				<h1 class="brand__title">まるチャンネル 文字起こし全文検索　ver 0.8.9</h1>
 				<span class="brand__sub" id="corpusMeta"></span>
 			</div>
 			<div class="search">
@@ -31,7 +31,10 @@
 	</main>
 
 	<footer id="footer">
-		<p class="disclaimer">掲載している文字起こしは YouTube の自動生成字幕を加工したもので、正確性を保証するものではありません。正確な内容は各動画の音声をご確認ください。当サイトは非公式のファンプロジェクトであり、チャンネル運営者および YouTube とは関係ありません。</p>
+		<p class="disclaimer">
+			掲載している文字起こしは YouTube の自動字幕（ASR）をもとに、専用辞書とLLM（大規模言語モデル）を用いて補正したものであり、正確性を保証するものではありません。正確な内容は各動画の音声をご確認ください。<br>
+			当サイトは非公式のファンプロジェクトであり、チャンネル運営者および YouTube とは関係ありません。<br>
+			Copyright © MindWood, Proudly built with Claude Code.</p>
 		<p class="footer__meta" id="footerMeta"></p>
 	</footer>
 
@@ -40,18 +43,22 @@
 		<div class="modal__backdrop" data-close></div>
 		<div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="proposeTitle">
 			<h2 class="modal__title" id="proposeTitle">修正提案</h2>
-			<p class="modal__hint">下のテキストを直して「GitHub で提案」を押すと、GitHub の提案ページが新しいタブで開きます。最終的な投稿は GitHub 側で行います（GitHub アカウントが必要です）。</p>
+			<p class="modal__hint">下のテキストを直して「GitHub で提案」を押すと、GitHub の提案ページが開くので、そのまま Issue を立ててください。いたずら投稿を防止するため、内容を管理者が確認した上で反映する仕様となっています（GitHub アカウントが必要です）。</p>
 			<div class="modal__label">原文（表示中のテキスト）</div>
 			<div class="modal__original" id="proposeOriginal"></div>
 			<div class="modal__label">修正後</div>
 			<textarea id="proposeText" class="modal__text" rows="4" spellcheck="false" aria-label="修正後のテキスト"></textarea>
 			<div class="modal__actions">
+				<div class="modal__nav">
+					<button type="button" class="btn btn--nav" id="proposePrev" aria-label="前の時間へ">◀</button>
+					<button type="button" class="btn btn--nav" id="proposeNext" aria-label="次の時間へ">▶</button>
+				</div>
 				<button type="button" class="btn btn--ghost" data-close>キャンセル</button>
 				<button type="button" class="btn btn--primary" id="proposeSubmit">GitHub で提案</button>
 			</div>
 		</div>
 	</div>
 
-<script src="app.js?260624"></script>
+<script src="app.js?260628"></script>
 </body>
 </html>

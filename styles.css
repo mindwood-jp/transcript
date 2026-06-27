@@ -6,6 +6,8 @@
     --line:#E5E8E7;
     --accent:#0F766E;        /* タイムスタンプ・フォーカス */
     --accent-weak:#E4F1EE;   /* ホバー面 */
+    --btn-propose:#795548;   /* 修正提案ボタンの背景（茶） */
+    --btn-ts:#1B365D;        /* タイムスタンプボタンの背景（紺） */
     --mark-bg:#FCE7A0;       /* 一致箇所のマーカー */
     --mark-ink:#4A3700;
     --radius:11px;
@@ -103,19 +105,19 @@
   .hit__meta{display:flex; flex-direction:column; gap:6px; align-items:flex-start}
   .ts{
     font-family:var(--mono); font-size:.82rem; font-weight:600;
-    color:var(--accent); text-decoration:none;
-    padding:2px 7px; border:1px solid var(--line); border-radius:7px;
-    background:var(--surface); white-space:nowrap;
+    color:#fff; text-decoration:none;
+    padding:2px 7px; border:1px solid var(--btn-ts); border-radius:7px;
+    background:var(--btn-ts); white-space:nowrap;
     font-variant-numeric:tabular-nums; line-height:1.5; margin-top:2px;
     width:var(--seg-w); text-align:center;   /* 常に h:mm:ss 幅で固定 */
   }
-  .ts:hover{border-color:var(--accent); background:var(--accent-weak)}
+  .ts:hover{border-color:var(--accent); color:var(--accent); background:var(--accent-weak)}
   .ts:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .propose{
     font-family:var(--sans); font-size:.74rem; font-weight:600;
-    color:var(--ink-soft); cursor:pointer; white-space:nowrap;
-    padding:2px 8px; border:1px solid var(--line); border-radius:7px;
-    background:var(--surface); line-height:1.5;
+    color:#fff; cursor:pointer; white-space:nowrap;
+    padding:2px 8px; border:1px solid var(--btn-propose); border-radius:7px;
+    background:var(--btn-propose); line-height:1.5;
     width:var(--seg-w); text-align:center;   /* タイムスタンプと同一幅 */
     transition:border-color .15s, color .15s, background .15s;
   }
@@ -186,6 +188,7 @@
   }
   .modal__text:focus{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-weak)}
   .modal__actions{display:flex; justify-content:flex-end; gap:10px; margin-top:16px}
+  .modal__nav{margin-right:auto; display:flex; gap:8px}
   .btn{
     font-family:var(--sans); font-size:.88rem; font-weight:600; cursor:pointer;
     padding:9px 16px; border-radius:9px; border:1px solid var(--line);
@@ -195,6 +198,9 @@
   .btn--ghost:hover{background:var(--bg)}
   .btn--primary{background:var(--accent); border-color:var(--accent); color:#fff}
   .btn--primary:hover{filter:brightness(1.06)}
+  .btn--nav{font-family:var(--mono); font-size:1.3rem; line-height:1; min-width:48px; padding:6px 14px}
+  .btn--nav:hover:not(:disabled){background:var(--bg)}
+  .btn:disabled{opacity:.4; cursor:not-allowed}
   .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 
   @media (max-width:520px){

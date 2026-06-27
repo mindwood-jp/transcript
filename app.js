@@ -11,7 +11,7 @@
 
   let flat = [];                   // {vi, start, disp, search}
   let videos = [];                 // {id, title}
-  const rowByKey = new Map();      // 描画中のヒット: key -> {vid, start, text}
+  const rowByKey = new Map();      // 描画中のヒット: key -> flat配列のインデックス(i)
 
   // overlay と共通の正規キー: "<video_id>@" + round(start*1000)
   const segKey = (vid, start) => vid + "@" + Math.round(start * 1000);
@@ -79,7 +79,7 @@
           if (typeof c === "string" && c.length) { t = c; applied++; }
         }
         const disp = norm(t);
-        flat.push({ vi, start, disp, search: disp.toLowerCase() });
+        flat.push({ i: flat.length, vi, start, disp, search: disp.toLowerCase() });
       }
     });
 
@@ -164,7 +164,7 @@
         const t = Math.floor(it.start);
         const url = `${vurl}?t=${t}`;
         const key = segKey(v.id, it.start);
-        rowByKey.set(key, { vid: v.id, start: it.start, text: it.disp });
+        rowByKey.set(key, it.i);
         parts.push(
           `<li class="hit">` +
           `<div class="hit__meta">` +
@@ -186,14 +186,40 @@
   const modal = el("proposeModal");
   const propOriginal = el("proposeOriginal");
   const propText = el("proposeText");
-  let propState = null;            // {key, vid, start, text}
+  const prevBtn = el("proposePrev");
+  const nextBtn = el("proposeNext");
+  let propState = null;            // {i, key, vid, start, text}
+
+  // 動画の端では各方向のボタンを無効化（同一動画内のみ移動）
+  function updateNavButtons() {
+    if (!propState) { prevBtn.disabled = nextBtn.disabled = true; return; }
+    const i = propState.i, vi = flat[i].vi;
+    prevBtn.disabled = !(i - 1 >= 0 && flat[i - 1].vi === vi);
+    nextBtn.disabled = !(i + 1 < flat.length && flat[i + 1].vi === vi);
+  }
+
+  // flat配列のインデックス i のセグメントをモーダルに読み込む
+  function setProposeTo(i) {
+    const it = flat[i];
+    const vid = videos[it.vi].id;
+    propState = { i, key: segKey(vid, it.start), vid, start: it.start, text: it.disp };
+    propOriginal.textContent = it.disp;
+    propText.value = it.disp;
+    updateNavButtons();
+  }
+
+  // 同一動画内で前(-1)／次(+1)の時間のセグメントへ移動
+  function navPropose(dir) {
+    if (!propState) return;
+    const i = propState.i, vi = flat[i].vi, j = i + dir;
+    if (j < 0 || j >= flat.length || flat[j].vi !== vi) return;
+    setProposeTo(j);
+  }
 
   function openPropose(key) {
-    const row = rowByKey.get(key);
-    if (!row) return;
-    propState = { key, vid: row.vid, start: row.start, text: row.text };
-    propOriginal.textContent = row.text;
-    propText.value = row.text;
+    const i = rowByKey.get(key);
+    if (i == null) return;
+    setProposeTo(i);
     modal.hidden = false;
     propText.focus();
   }
@@ -238,6 +264,8 @@
     if (e.target.hasAttribute("data-close")) closePropose();
   });
   el("proposeSubmit").addEventListener("click", submitPropose);
+  prevBtn.addEventListener("click", () => navPropose(-1));
+  nextBtn.addEventListener("click", () => navPropose(1));
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !modal.hidden) closePropose();
   });
