@@ -208,6 +208,10 @@
 	.hit{grid-template-columns:1fr; gap:4px}
 	.hit__meta{flex-direction:row; align-items:center; gap:8px}
 	.ts{margin-top:0}
+	/* スマホ: 戻る/進む(◀▶)をキャンセル・提案ボタンの下段に並べる */
+	.modal__actions{flex-wrap:wrap}
+	.modal__nav{order:2; width:100%; margin-right:0; gap:10px}
+	.modal__nav .btn--nav{flex:1}
   }
   @media (prefers-reduced-motion:reduce){
 	*{transition:none !important}
