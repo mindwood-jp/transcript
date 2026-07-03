@@ -85,15 +85,27 @@
   /* ---- 結果 ---- */
   main{max-width:var(--maxw); margin:0 auto; padding:8px 20px 80px}
 
-  .group{margin-top:26px}
-  .group__title{
-	font-size:1.02rem; font-weight:700; margin:0 0 6px;
-	padding-bottom:8px;
-	border-bottom:2px solid transparent;
-	border-image:linear-gradient(90deg, #510778, var(--accent)) 1;
+  .group{
+	margin-top:20px; padding-top:12px;
+	border-top:1px solid var(--line);
   }
-  .group__title a{text-decoration:none}
-  .group__title a:hover{color:var(--accent)}
+  .group:first-child{
+	margin-top:0; padding-top:14px; border-top:0;   /* 先頭は区切り線なし・ヘッダーとの間隔は確保 */
+  }
+  .group__head{
+	display:flex; align-items:center; gap:12px;
+	margin:0 0 6px;
+	text-decoration:none;
+  }
+  .group__thumb{
+	flex:0 0 auto;
+	width:160px; height:auto; aspect-ratio:16/9;
+	object-fit:cover; border-radius:8px;
+	background:var(--line); display:block;   /* 読み込み前の下地 */
+  }
+  .group__head.is-nothumb .group__thumb{display:none}
+  .group__title{font-size:1.02rem; font-weight:700; margin:0}
+  .group__head:hover .group__title{color:var(--accent)}
 
   .hits{list-style:none; margin:0; padding:0}
   .hit{
@@ -205,6 +217,7 @@
 
   @media (max-width:520px){
 	.search__input{font-size:1.05rem}
+	.group__thumb{width:116px}
 	.hit{grid-template-columns:1fr; gap:4px}
 	.hit__meta{flex-direction:row; align-items:center; gap:8px}
 	.ts{margin-top:0}

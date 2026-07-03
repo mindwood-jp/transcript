@@ -158,8 +158,12 @@
     for (const g of groups) {
       const v = videos[g.vi];
       const vurl = "https://youtu.be/" + encodeURIComponent(v.id);
-      parts.push(`<section class="group"><h2 class="group__title">` +
-        `<a href="${vurl}" target="_blank" rel="noopener">${escapeHTML(v.title)}</a></h2><ul class="hits">`);
+      const thumb = `https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/mqdefault.jpg`;
+      parts.push(`<section class="group">` +
+        `<a class="group__head" href="${vurl}" target="_blank" rel="noopener">` +
+          `<img class="group__thumb" src="${thumb}" alt="" width="160" height="90" loading="lazy" decoding="async">` +
+          `<h2 class="group__title">${escapeHTML(v.title)}</h2>` +
+        `</a><ul class="hits">`);
       for (const it of g.rows) {
         const t = Math.floor(it.start);
         const url = `${vurl}?t=${t}`;
@@ -260,6 +264,15 @@
     const btn = e.target.closest(".propose");
     if (btn) openPropose(btn.dataset.key);
   });
+  // サムネ読み込み失敗（削除・非公開動画など）は画像を隠す
+  // 画像のerrorはバブルしないため、capture段階で拾う
+  resultsEl.addEventListener("error", (e) => {
+    const img = e.target;
+    if (img && img.classList && img.classList.contains("group__thumb")) {
+      const head = img.closest(".group__head");
+      if (head) head.classList.add("is-nothumb");
+    }
+  }, true);
   modal.addEventListener("click", (e) => {
     if (e.target.hasAttribute("data-close")) closePropose();
   });
