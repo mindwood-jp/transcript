@@ -102,10 +102,19 @@
 	width:160px; height:auto; aspect-ratio:16/9;
 	object-fit:cover; border-radius:8px;
 	background:var(--line); display:block;   /* 読み込み前の下地 */
+	transform-origin:center;
+	transition:transform .28s ease, box-shadow .28s ease;   /* ホバー時のふわっと拡大 */
   }
   .group__head.is-nothumb .group__thumb{display:none}
   .group__title{font-size:1.02rem; font-weight:700; margin:0}
   .group__head:hover .group__title{color:var(--accent)}
+  /* サムネイル＋タイトル領域にホバーで、サムネイルがふわっと拡大 */
+  @media (hover:hover){
+	.group__head:hover .group__thumb{
+	  transform:scale(1.06);
+	  box-shadow:0 6px 18px rgba(20,8,30,.16);
+	}
+  }
 
   .hits{list-style:none; margin:0; padding:0}
   .hit{
