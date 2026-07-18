@@ -42,36 +42,47 @@
   };
 
   async function boot() {
-    let index;
+    // まず結合済み merge.json を試す（あれば1本読むだけ。訂正はビルド時に適用済み）。
+    // 無ければ従来どおり index.json（必須）＋ overlay.json（任意）を読んでブラウザ側で結合する。
+    let corpus = null;
+    let overlay = null;
+
     try {
-      const res = await fetch("index.json", { cache: "no-cache" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      index = await res.json();
-    } catch (e) {
-      const onFile = location.protocol === "file:";
-      resultsEl.innerHTML =
-        `<div class="note note--error"><b>index.json を読み込めませんでした。</b><br>` +
-        (onFile
-          ? `ファイルを直接開く（file://）と読み込みがブロックされます。<br>` +
-            `このフォルダで <code>python -m http.server 8000</code> を実行し、` +
-            `<code>http://localhost:8000/</code> を開いてください。`
-          : `index.html と同じ場所に index.json があるか確認してください。（${escapeHTML(String(e.message || e))}）`) +
-        `</div>`;
-      return;
+      const rm = await fetch("merge.json", { cache: "no-cache" });
+      if (rm.ok) corpus = await rm.json();     // 成功: 結合済み。overlay は使わない。
+    } catch (_) { /* merge.json 未配置でOK。index+overlay にフォールバック */ }
+
+    if (!corpus) {
+      // フォールバック: index.json は必須。読めなければ従来のエラーUIを出して終了。
+      try {
+        const res = await fetch("index.json", { cache: "no-cache" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        corpus = await res.json();
+      } catch (e) {
+        const onFile = location.protocol === "file:";
+        resultsEl.innerHTML =
+          `<div class="note note--error"><b>index.json を読み込めませんでした。</b><br>` +
+          (onFile
+            ? `ファイルを直接開く（file://）と読み込みがブロックされます。<br>` +
+              `このフォルダで <code>python -m http.server 8000</code> を実行し、` +
+              `<code>http://localhost:8000/</code> を開いてください。`
+            : `index.html と同じ場所に index.json があるか確認してください。（${escapeHTML(String(e.message || e))}）`) +
+          `</div>`;
+        return;
+      }
+
+      // 任意: 承認済み訂正のオーバーレイ。あればマージ、無ければ無視。
+      try {
+        const r = await fetch("overlay.json", { cache: "no-cache" });
+        if (r.ok) overlay = await r.json();
+      } catch (_) { /* 未配置でOK */ }
     }
 
-    videos = index.videos.map((v) => ({ id: v.id, title: v.title || v.id }));
-
-    // 任意: 承認済み訂正のオーバーレイ。あればマージ、無ければ無視。
-    let overlay = null;
-    try {
-      const r = await fetch("overlay.json", { cache: "no-cache" });
-      if (r.ok) overlay = await r.json();
-    } catch (_) { /* 未配置でOK */ }
+    videos = corpus.videos.map((v) => ({ id: v.id, title: v.title || v.id }));
 
     let applied = 0;
     flat = [];
-    index.videos.forEach((v, vi) => {
+    corpus.videos.forEach((v, vi) => {
       for (const [start, text] of v.segments) {
         let t = text;
         if (overlay) {
@@ -84,11 +95,11 @@
     });
 
     corpusMeta.textContent =
-      `${index.video_count.toLocaleString()} 本 / ${index.segment_count.toLocaleString()} セグメント`;
+      `${corpus.video_count.toLocaleString()} 本 / ${corpus.segment_count.toLocaleString()} セグメント`;
 
     let gen = "";
-    if (index.generated_at) {
-      const d = new Date(index.generated_at);
+    if (corpus.generated_at) {
+      const d = new Date(corpus.generated_at);
       if (!isNaN(d.getTime())) {
         const parts = {};
         for (const p of new Intl.DateTimeFormat("ja-JP", {
@@ -98,7 +109,7 @@
         }).formatToParts(d)) parts[p.type] = p.value;
         gen = `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second} JST`;
       } else {
-        gen = index.generated_at; // パースできなければ原文のまま
+        gen = corpus.generated_at; // パースできなければ原文のまま
       }
     }
     el("footerMeta").innerHTML =
