@@ -67,13 +67,16 @@
 	-webkit-appearance:none; appearance:none;
   }
   .search__clear{
-	position:absolute; right:8px; top:50%; transform:translateY(-50%);
-	width:30px; height:30px; border:0; border-radius:8px;
-	background:transparent; color:var(--ink-soft);
-	font-size:1.1rem; cursor:pointer; line-height:1;
+	position:absolute; right:9px; top:50%; transform:translateY(-50%);
+	width:28px; height:28px; border:0; border-radius:50%;
+	background:#dc143c; color:#fff;
+	font-size:.95rem; font-weight:700; cursor:pointer; line-height:1;
 	display:none; align-items:center; justify-content:center;
+	transition:background .15s, transform .1s;
   }
-  .search__clear:hover{background:var(--accent-weak); color:var(--accent)}
+  .search__clear:hover{background:#b01031; color:#fff; transform:translateY(-50%) scale(1.08)}
+  .search__clear:active{transform:translateY(-50%) scale(.94)}
+  .search__clear:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .search__clear.is-on{display:flex}
 
   .status{
@@ -81,6 +84,40 @@
 	font-size:.85rem; color:var(--ink-soft);
   }
   .status b{color:var(--ink); font-weight:700; font-variant-numeric:tabular-nums}
+
+  /* ---- タグクラウド ---- */
+  /* 検索窓が空のときだけ表示。#results の外に置いてあるので run() の再描画で消えない */
+  .tags{
+	max-width:var(--maxw); margin:0 auto; padding:16px 20px 0;
+  }
+  .tags[hidden]{display:none}
+  .tags__title{
+	font-size:.78rem; font-weight:600; letter-spacing:.04em;
+	color:var(--ink-soft); margin:0 0 6px;
+	text-align:center;
+  }
+  /* 語は JS が絶対配置する。height も JS が確定させる */
+  .tags__list{
+	position:relative;
+	background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+	padding:16px 18px;
+  }
+  .tag{
+	position:absolute;
+	font-family:var(--sans); line-height:1.08; white-space:nowrap; cursor:pointer;
+	background:transparent; border:0; padding:0;
+	font-feature-settings:"palt" 1;
+	font-kerning:normal;
+	transition:opacity .15s, filter .15s;
+  }
+  .tag:hover{opacity:.62}
+  .tag:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+
+  /* 退避表示: 渦巻き配置ができなかったときだけ、折り返しの並びに戻す */
+  .tags__list.is-flow{
+	display:flex; flex-wrap:wrap; align-items:baseline; gap:7px 9px;
+  }
+  .tags__list.is-flow .tag{position:static; color:var(--ink)}
 
   /* ---- 結果 ---- */
   main{max-width:var(--maxw); margin:0 auto; padding:8px 20px 80px}
@@ -152,9 +189,9 @@
 
   /* ---- 空・読み込み・エラー ---- */
   .note{
-	margin-top:40px; padding:28px 24px; text-align:center;
-	color:var(--ink-soft); font-size:.95rem;
-	background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+	margin-top:20px; padding:28px 24px; text-align:center;
+	color:#a52a2a; font-size:.95rem;
+	background:#faf0e6; border:1px solid var(--line); border-radius:var(--radius);
   }
   .note b{color:var(--ink)}
   .note code{
@@ -242,6 +279,8 @@
 
   @media (max-width:520px){
 	.search__input{font-size:1.05rem}
+	.tags{padding-top:12px}
+	.tags__list{padding:12px 10px}
 	.group__thumb{width:116px}
 	.hit{grid-template-columns:1fr; gap:4px}
 	.hit__meta{flex-direction:row; align-items:center; gap:8px}
