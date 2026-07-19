@@ -140,7 +140,8 @@
 
   // 文字色。大きい語ほど濃く、小さい語は控えめに。
   // 語ごとに固定（ハッシュ）なので、リサイズしても色は変わらない。
-  const TAG_COLORS = ["#510778", "#0F766E", "#1B3666", "#7A2E6E", "#8A5A2B"];
+  const TAG_COLORS = ["#510778", "#0F766E", "#1B3666", "#7A2E6E", "#8A5A2B",
+                      "#1D6FA3", "#B4531C", "#3F6F1E"];
   const TAG_COLOR_FAINT = "#7E8791";
   const TAG_COLOR_TOP = "#DC143C";      // 最上位（件数が特に多い語）だけの色
 
@@ -212,7 +213,7 @@
       if (r >= 0.80)      { it.tier = 3; it.size = Math.round(base * 1.15); it.weight = 700; }
       else if (r >= 0.55) { it.tier = 2; it.size = base; it.weight = 700; }
       else if (r >= 0.25) { it.tier = 1; it.size = base; it.weight = 600; }
-      else                { it.tier = 0; it.size = base; it.weight = 400; }
+      else                { it.tier = 0; it.size = base; it.weight = 500; }
       measureCtx.font = it.weight + " " + it.size + "px " + family;
       it.w = Math.ceil(measureCtx.measureText(it.word).width) + 1;
       it.h = Math.ceil(it.size * 1.05);     // .tag の line-height と合わせる
@@ -254,13 +255,37 @@
     for (const p of placed) { top = Math.min(top, p.y); bottom = Math.max(bottom, p.y + p.h); }
     if (!isFinite(top)) { renderTagsFlow(); return; }   // 1つも置けなければ従来の並びに退避
 
+    // 近傍に同じ色が並ばないように選ぶ。ハッシュを起点にして、
+    // 近くの配置済みタグと色がぶつかったら次の色へずらす。
+    // tagItems は件数の降順なので、大きい語が先に色を確保する。
+    const NEAR_X = 48, NEAR_Y = 28;      // この距離まで近ければ「隣」とみなす(px)
+    const colored = [];
+    const isNear = (a, b) => {
+      const dx = Math.max(0, Math.max(a.x - (b.x + b.w), b.x - (a.x + a.w)));
+      const dy = Math.max(0, Math.max(a.y - (b.y + b.h), b.y - (a.y + a.h)));
+      return dx <= NEAR_X && dy <= NEAR_Y;
+    };
+    const pickColor = (it) => {
+      if (it.tier === 3) return TAG_COLOR_TOP;
+      if (it.tier === 0) return TAG_COLOR_FAINT;
+      const start = hashCode(it.word) % TAG_COLORS.length;
+      const box = { x: it.x, y: it.y, w: it.w, h: it.h };
+      for (let k = 0; k < TAG_COLORS.length; k++) {
+        const c = TAG_COLORS[(start + k) % TAG_COLORS.length];
+        let ng = false;
+        for (let i = 0; i < colored.length; i++) {
+          if (colored[i].color === c && isNear(box, colored[i])) { ng = true; break; }
+        }
+        if (!ng) return c;
+      }
+      return TAG_COLORS[start];          // 8色すべてぶつかったらハッシュ色に戻す
+    };
+
     const parts = [];
     for (const it of tagItems) {
       if (it.x == null) continue;
-      const idx = hashCode(it.word) % TAG_COLORS.length;
-      const color = it.tier === 3 ? TAG_COLOR_TOP
-                  : it.tier === 0 ? TAG_COLOR_FAINT
-                  : TAG_COLORS[idx];
+      const color = pickColor(it);
+      colored.push({ x: it.x, y: it.y, w: it.w, h: it.h, color });
       const title = it.vids
         ? it.hits.toLocaleString() + " 件 ・ " + it.vids.toLocaleString() + " 本の動画"
         : it.hits.toLocaleString() + " 件";
