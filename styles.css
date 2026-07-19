@@ -120,7 +120,7 @@
   .tags__list.is-flow .tag{position:static; color:var(--ink)}
 
   /* ---- 結果 ---- */
-  main{max-width:var(--maxw); margin:0 auto; padding:8px 20px 80px}
+  main{max-width:var(--maxw); margin:0 auto; padding:8px 20px 50px}
 
   .group{
 	margin-top:20px; padding-top:12px;
@@ -189,7 +189,7 @@
 
   /* ---- 空・読み込み・エラー ---- */
   .note{
-	margin-top:20px; padding:28px 24px; text-align:center;
+	margin-top:20px; padding:8px 12px; text-align:center;
 	color:#a52a2a; font-size:.95rem;
 	background:#faf0e6; border:1px solid var(--line); border-radius:var(--radius);
   }
@@ -281,7 +281,7 @@
 	.search__input{font-size:1.05rem}
 	.top__inner{padding:18px 12px 10px}
 	.status{padding:0 12px}
-	main{padding:8px 8px 80px}
+	main{padding:8px 8px 30px}
 	footer{padding:0 12px 40px}
 	.tags{padding:12px 8px 0}
 	.tags__list{padding:12px 4px}
