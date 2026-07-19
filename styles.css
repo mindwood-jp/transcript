@@ -191,9 +191,9 @@
   .note{
 	margin-top:20px; padding:8px 12px; text-align:center;
 	color:#a52a2a; font-size:.95rem;
-	background:#faf0e6; border:1px solid var(--line); border-radius:var(--radius);
+	background:#faf0e6; border:2px solid #a52a2a;;
   }
-  .note b{color:var(--ink)}
+  .note b{color:#dc143c}
   .note code{
 	font-family:var(--mono); font-size:.85em;
 	background:var(--bg); border:1px solid var(--line);
