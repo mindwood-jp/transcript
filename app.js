@@ -512,6 +512,25 @@
     if (e.key === "Escape" && !modal.hidden) closePropose();
   });
 
+  // ---- 本サイトについて モーダル ----
+  const aboutModal = el("aboutModal");
+  const aboutBody  = el("aboutBody");
+
+  function openAbout() {
+    aboutModal.hidden = false;
+    aboutBody.scrollTop = 0;          // 常に冒頭から
+    aboutBody.focus();
+  }
+  function closeAbout() { aboutModal.hidden = true; }
+
+  el("aboutOpen").addEventListener("click", openAbout);
+  aboutModal.addEventListener("click", (e) => {
+    if (e.target.hasAttribute("data-close")) closeAbout();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !aboutModal.hidden) closeAbout();
+  });
+
   // 入力（デバウンス）
   let timer = 0;
   qInput.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, 120); });

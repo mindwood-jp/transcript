@@ -7,13 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?260720">
+<link rel="stylesheet" href="styles.css?260720b">
 </head>
 <body>
 	<div class="top">
 		<div class="top__inner">
 			<div class="brand">
-				<h1 class="brand__title">まるチャンネル 文字起こし全文検索　ver 0.9.7</h1>
+				<h1 class="brand__title">まるチャンネル 文字起こし全文検索</h1>
+				<button type="button" class="brand__about" id="aboutOpen">本サイトについて</button>
 				<span class="brand__sub" id="corpusMeta"></span>
 			</div>
 			<div class="search">
@@ -41,9 +42,10 @@
 
 	<footer id="footer">
 		<p class="disclaimer">
-			掲載している文字起こしは YouTube が生成する自動字幕（ASR）をもとに、専用辞書とLLM（大規模言語モデル）を用いて補正したものであり、正確性を保証するものではありません。正確な内容は各動画の音声をご確認ください。<br>
-			当サイトは非公式のファンプロジェクトであり、チャンネル運営者および YouTube とは関係ありません。<br>
-			Copyright © MindWood, Proudly built with Claude Code.</p>
+			掲載している文字起こしは、YouTube が生成する自動字幕（ASR）をもとに、専用辞書、独自コーパスと LLM を用いて補正したものであり、内容の正確性を保証するものではありません。
+			正式な内容は、各動画の音声をご確認ください。<br>
+			当サイトは非公式のファンサイトであり、チャンネル運営者および YouTube とは無関係です。<br>
+			Copyright © MindWood, Proudly built with Claude Code. Version 0.9.7</p>
 		<p class="footer__meta" id="footerMeta"></p>
 	</footer>
 
@@ -68,6 +70,55 @@
 		</div>
 	</div>
 
-<script src="app.js?260720"></script>
+	<!-- 本サイトについて モーダル（既定で非表示） -->
+	<div id="aboutModal" class="modal" hidden>
+		<div class="modal__backdrop" data-close></div>
+		<div class="modal__panel modal__panel--about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+
+			<div class="about__head">
+				<h2 class="modal__title" id="aboutTitle">本サイトについて</h2>
+				<p class="about__lead">まるチャンネル 文字起こし全文検索</p>
+			</div>
+
+			<div class="about__body" id="aboutBody" tabindex="0">
+
+				<h3 class="about__h">サイトの目的</h3>
+				<p class="about__p">ある発言について、「実際には何と言っていたのか」を、その場ですぐ確かめられるようにすること。</p>
+
+				<h3 class="about__h">開発の動機</h3>
+				<p class="about__p">「一次情報を見ない」のは、確認する気がないからではなく、「調べることが現実的に難しいから」ではないでしょうか。</p>
+				<p class="about__p">数百本、延べ数百時間に及ぶ動画の中から、目的の1分を探し出すのは極めて困難です。その「面倒さ」を取り除けば、人はもっと気軽に一次情報へアクセスできるはずです。</p>
+				<p class="about__p">キーワード検索ひとつで該当場面を一覧表示し、ワンクリックでその瞬間から再生できる――気になった瞬間に、すぐ確かめられる環境を提供します。</p>
+
+				<h3 class="about__h">私たちのスタンス</h3>
+
+				<ol class="about__list">
+					<li>
+						<h4 class="about__sub">切り取りを否定しない</h4>
+						<p class="about__p">短く編集されたクリップや要約は、話題の入り口として有用です。それがなければ届かなかった人に情報が届く。悪意のないものであれば、どんどん作られてよいと考えています。</p>
+						<p class="about__p">問題は切り取りそのものではなく、その先の一次情報へアクセスする手段がないことです。前後の文脈や話者のニュアンスは、編集の過程でどうしても削ぎ落とされます。</p>
+						<p class="about__p">だからこそ、いつでも元の一次情報へ戻れる経路を用意することで、切り取りコンテンツも安心して受け入れられる環境を目指します。</p>
+					</li>
+					<li>
+						<h4 class="about__sub">解釈や判断はしない</h4>
+						<p class="about__p">私たちは、解釈や評価を一切行いません。発言の正否も判断せず、該当箇所へ案内することだけに特化します。</p>
+					</li>
+					<li>
+						<h4 class="about__sub">テキストは「完璧さ」ではなく「道しるべ」</h4>
+						<p class="about__p">掲載しているテキストは、YouTube の自動字幕をベースに、LLM などで補正したものです。そのため、現時点では誤りを多く含みます。このサイトが目指しているのは、完璧な文字起こしではありません。</p>
+						<p class="about__p">正解は常に「動画の音声」です。テキストは、音声へ迷わずたどり着くための「道しるべ」としてご利用ください。</p>
+					</li>
+				</ol>
+
+			</div>
+
+			<div class="about__foot">
+				<button type="button" class="btn btn--primary" data-close>OK</button>
+			</div>
+
+		</div>
+	</div>
+
+<script src="app.js?260720b"></script>
 </body>
 </html>
