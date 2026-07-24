@@ -43,54 +43,31 @@
   };
 
   async function boot() {
-    // まず結合済み merge.json を試す（あれば1本読むだけ。訂正はビルド時に適用済み）。
-    // 無ければ従来どおり index.json（必須）＋ overlay.json（任意）を読んでブラウザ側で結合する。
+    // merge.json（訂正焼き込み済みの結合コーパス）を1本読むだけ。必須。
     let corpus = null;
-    let overlay = null;
-
     try {
-      const rm = await fetch("merge.json", { cache: "no-cache" });
-      if (rm.ok) corpus = await rm.json();     // 成功: 結合済み。overlay は使わない。
-    } catch (_) { /* merge.json 未配置でOK。index+overlay にフォールバック */ }
-
-    if (!corpus) {
-      // フォールバック: index.json は必須。読めなければ従来のエラーUIを出して終了。
-      try {
-        const res = await fetch("index.json", { cache: "no-cache" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        corpus = await res.json();
-      } catch (e) {
-        const onFile = location.protocol === "file:";
-        resultsEl.innerHTML =
-          `<div class="note note--error"><b>index.json を読み込めませんでした。</b><br>` +
-          (onFile
-            ? `ファイルを直接開く（file://）と読み込みがブロックされます。<br>` +
-              `このフォルダで <code>python -m http.server 8000</code> を実行し、` +
-              `<code>http://localhost:8000/</code> を開いてください。`
-            : `index.html と同じ場所に index.json があるか確認してください。（${escapeHTML(String(e.message || e))}）`) +
-          `</div>`;
-        return;
-      }
-
-      // 任意: 承認済み訂正のオーバーレイ。あればマージ、無ければ無視。
-      try {
-        const r = await fetch("overlay.json", { cache: "no-cache" });
-        if (r.ok) overlay = await r.json();
-      } catch (_) { /* 未配置でOK */ }
+      const res = await fetch("merge.json", { cache: "no-cache" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      corpus = await res.json();
+    } catch (e) {
+      const onFile = location.protocol === "file:";
+      resultsEl.innerHTML =
+        `<div class="note note--error"><b>merge.json を読み込めませんでした。</b><br>` +
+        (onFile
+          ? `ファイルを直接開く（file://）と読み込みがブロックされます。<br>` +
+            `このフォルダで <code>python -m http.server 8000</code> を実行し、` +
+            `<code>http://localhost:8000/</code> を開いてください。`
+          : `index.html と同じ場所に merge.json があるか確認してください。（${escapeHTML(String(e.message || e))}）`) +
+        `</div>`;
+      return;
     }
 
     videos = corpus.videos.map((v) => ({ id: v.id, title: v.title || v.id }));
 
-    let applied = 0;
     flat = [];
     corpus.videos.forEach((v, vi) => {
       for (const [start, text] of v.segments) {
-        let t = text;
-        if (overlay) {
-          const c = overlay[segKey(v.id, start)];
-          if (typeof c === "string" && c.length) { t = c; applied++; }
-        }
-        const disp = norm(t);
+        const disp = norm(text);
         flat.push({ i: flat.length, vi, start, disp, search: disp.toLowerCase() });
       }
     });
@@ -113,9 +90,7 @@
         gen = corpus.generated_at; // パースできなければ原文のまま
       }
     }
-    el("footerMeta").innerHTML =
-      `インデックス生成: ${escapeHTML(gen)}` +
-      (applied ? ` ・ <span class="applied">訂正 ${applied.toLocaleString()} 件を適用</span>` : "");
+    el("footerMeta").innerHTML = `インデックス生成: ${escapeHTML(gen)}`;
 
     qInput.disabled = false;
 
