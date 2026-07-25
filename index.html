@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?260720b">
+<link rel="stylesheet" href="styles.css?260725b">
 </head>
 <body>
 	<div class="top">
@@ -76,8 +76,11 @@
 		<div class="modal__panel modal__panel--about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
 
 			<div class="about__head">
-				<h2 class="modal__title" id="aboutTitle">本サイトについて</h2>
-				<p class="about__lead">まるチャンネル 文字起こし全文検索</p>
+				<div class="about__headtext">
+					<h2 class="modal__title" id="aboutTitle">本サイトについて</h2>
+					<p class="about__lead">スクロールして読み進める</p>
+				</div>
+				<button type="button" class="modal__close" data-close aria-label="閉じる">&times;</button>
 			</div>
 
 			<div class="about__body" id="aboutBody" tabindex="0">
@@ -110,10 +113,6 @@
 					</li>
 				</ol>
 
-			</div>
-
-			<div class="about__foot">
-				<button type="button" class="btn btn--primary" data-close>OK</button>
 			</div>
 
 		</div>
