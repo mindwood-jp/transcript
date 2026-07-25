@@ -117,9 +117,9 @@
 	background:transparent; border:0; padding:0;
 	font-feature-settings:"palt" 1;
 	font-kerning:normal;
-	transition:opacity .15s, filter .15s;
+	transition:opacity .15s, filter .15s, transform .15s;
   }
-  .tag:hover{opacity:.62}
+  .tag:hover{opacity:.62; transform:rotate(-3deg)}
   .tag:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
 
   /* 退避表示: 渦巻き配置ができなかったときだけ、折り返しの並びに戻す */
@@ -200,7 +200,7 @@
   .note{
 	margin-top:20px; padding:8px 12px; text-align:center;
 	color:#a52a2a; font-size:.95rem;
-	background:#faf0e6; border:2px solid #a52a2a;;
+	background:#faf0e6; border:2px solid #a52a2a;
   }
   .note b{color:#dc143c}
   .note code{
@@ -236,7 +236,6 @@
 	max-width:var(--maxw); margin:0 auto; padding:0 20px 48px;
 	font-size:.76rem; color:var(--ink-soft); font-family:var(--mono);
   }
-  footer .applied{color:var(--accent)}
   .disclaimer{
 	margin:0 0 12px; padding-top:18px;
 	border-top:1px solid var(--line);

@@ -439,10 +439,6 @@
 
   function submitPropose() {
     if (!propState) return;
-    if (ISSUE_REPO.includes("OWNER/REPO")) {
-      alert("投稿先リポジトリが未設定です。app.js の ISSUE_REPO を設定してください。");
-      return;
-    }
     const proposed = propText.value.trim();
     if (!proposed) { alert("修正後のテキストを入力してください。"); return; }
     if (proposed === propState.text.trim()) {
@@ -483,9 +479,6 @@
   el("proposeSubmit").addEventListener("click", submitPropose);
   prevBtn.addEventListener("click", () => navPropose(-1));
   nextBtn.addEventListener("click", () => navPropose(1));
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !modal.hidden) closePropose();
-  });
 
   // ---- 本サイトについて モーダル ----
   const aboutModal = el("aboutModal");
@@ -502,8 +495,12 @@
   aboutModal.addEventListener("click", (e) => {
     if (e.target.hasAttribute("data-close")) closeAbout();
   });
+
+  // Escapeキー: 開いている方のモーダルを閉じる（同時に開くことはない）
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !aboutModal.hidden) closeAbout();
+    if (e.key !== "Escape") return;
+    if (!modal.hidden) closePropose();
+    else if (!aboutModal.hidden) closeAbout();
   });
 
   // 入力（デバウンス）
