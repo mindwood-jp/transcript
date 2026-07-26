@@ -10,14 +10,15 @@
         resultsEl = el("results"), corpusMeta = el("corpusMeta"),
         tagsEl = el("tags"), tagListEl = el("tagList");
 
-  let flat = [];                   // {vi, start, disp, search}
+  let flat = [];                   // {vi, start, disp, search, speaker}
   let videos = [];                 // {id, title}
   const rowByKey = new Map();      // 描画中のヒット: key -> flat配列のインデックス(i)
 
   // overlay と共通の正規キー: "<video_id>@" + round(start*1000)
   const segKey = (vid, start) => vid + "@" + Math.round(start * 1000);
 
-  const norm = (s) => s.normalize("NFKC");
+  // 全角英数字→半角、半角カタカナ→全角のみ変換する。記号・括弧・～等はそのまま保持する。
+  const norm = (s) => s.replace(/[Ａ-Ｚａ-ｚ０-９]|[ｦ-ﾟ]+/g, (m) => m.normalize("NFKC"));
   const escapeHTML = (s) => s.replace(/[&<>"']/g, (c) =>
     ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 
@@ -26,6 +27,19 @@
     const h = (sec / 3600) | 0, m = ((sec % 3600) / 60) | 0, s = sec % 60;
     const p = (n) => String(n).padStart(2, "0");
     return h ? `${h}:${p(m)}:${p(s)}` : `${m}:${p(s)}`;
+  };
+
+  // 話者バッジの色。名前のハッシュで固定色を選ぶ（Gemini経由のsegmentsだけ3要素目に持つ）。
+  const SPEAKER_COLORS = ["#0F766E", "#1B365D", "#7A2E6E", "#8A5A2B",
+                          "#1D6FA3", "#B4531C", "#3F6F1E", "#510778"];
+  const speakerColorCache = new Map();
+  const speakerColor = (name) => {
+    let c = speakerColorCache.get(name);
+    if (!c) {
+      c = SPEAKER_COLORS[hashCode(name) % SPEAKER_COLORS.length];
+      speakerColorCache.set(name, c);
+    }
+    return c;
   };
 
   // disp と、その小文字版 search、正規化済みクエリ q から強調HTMLを作る
@@ -66,9 +80,11 @@
 
     flat = [];
     corpus.videos.forEach((v, vi) => {
-      for (const [start, text] of v.segments) {
+      // Gemini経由のsegmentsは [start, text, speaker] の3要素。従来は [start, text] の2要素で
+      // speaker は undefined になる（検索対象からは自然に除外される＝textに話者名を含めない）。
+      for (const [start, text, speaker] of v.segments) {
         const disp = norm(text);
-        flat.push({ i: flat.length, vi, start, disp, search: disp.toLowerCase() });
+        flat.push({ i: flat.length, vi, start, disp, search: disp.toLowerCase(), speaker });
       }
     });
 
@@ -373,13 +389,16 @@
         const url = `${vurl}?t=${t}`;
         const key = segKey(v.id, it.start);
         rowByKey.set(key, it.i);
+        const speakerHTML = it.speaker
+          ? `<span class="speaker" style="background:${speakerColor(it.speaker)}">${escapeHTML(it.speaker)}</span> `
+          : "";
         parts.push(
           `<li class="hit">` +
           `<div class="hit__meta">` +
             `<a class="ts" href="${url}" target="_blank" rel="noopener">${fmtTime(it.start)}</a>` +
             `<button class="propose" type="button" data-key="${escapeHTML(key)}" aria-label="この箇所の修正を提案">修正提案</button>` +
           `</div>` +
-          `<span class="snippet">${highlight(it.disp, it.search, q)}</span></li>`
+          `<span class="snippet">${speakerHTML}${highlight(it.disp, it.search, q)}</span></li>`
         );
       }
       parts.push(`</ul></section>`);

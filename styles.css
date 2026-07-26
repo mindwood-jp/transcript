@@ -191,6 +191,11 @@
   .propose:hover{border-color:var(--accent); color:var(--accent); background:var(--accent-weak)}
   .propose:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .snippet{font-size:.96rem; word-break:break-word}
+  .speaker{
+	display:inline-block; font-size:.72rem; font-weight:700; color:#fff;
+	padding:0 8px; margin-right:2px;
+	vertical-align:1px; white-space:nowrap;
+  }
   mark{
 	background:var(--mark-bg); color:var(--mark-ink);
 	border-radius:3px; padding:0 1px; font-weight:600;
