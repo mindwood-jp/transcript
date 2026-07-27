@@ -30,10 +30,14 @@
   };
 
   // 話者バッジの色。名前のハッシュで固定色を選ぶ（Gemini経由のsegmentsだけ3要素目に持つ）。
+  // ホスト「石丸」だけはヘッダと同じ紫で固定表示する。
+  const HOST_NAME = "石丸";
+  const HOST_COLOR = "#510778";
   const SPEAKER_COLORS = ["#0F766E", "#1B365D", "#7A2E6E", "#8A5A2B",
-                          "#1D6FA3", "#B4531C", "#3F6F1E", "#510778"];
+                          "#1D6FA3", "#B4531C", "#3F6F1E", "#8C1D40"];
   const speakerColorCache = new Map();
   const speakerColor = (name) => {
+    if (name === HOST_NAME) return HOST_COLOR;
     let c = speakerColorCache.get(name);
     if (!c) {
       c = SPEAKER_COLORS[hashCode(name) % SPEAKER_COLORS.length];

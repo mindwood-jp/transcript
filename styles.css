@@ -193,8 +193,9 @@
   .snippet{font-size:.96rem; word-break:break-word}
   .speaker{
 	display:inline-block; font-size:.72rem; font-weight:700; color:#fff;
-	padding:0 8px; margin-right:2px;
+	padding:1px 15px 1px 9px; margin-right:6px;
 	vertical-align:1px; white-space:nowrap;
+	clip-path:polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
   }
   mark{
 	background:var(--mark-bg); color:var(--mark-ink);
