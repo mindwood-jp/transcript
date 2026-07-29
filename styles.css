@@ -196,6 +196,12 @@
 	padding:1px 15px 1px 9px; margin-right:6px;
 	vertical-align:1px; white-space:nowrap;
 	clip-path:polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+	/* 左上から光が当たっているような立体感: 上辺・左辺を明るく、下辺・右辺を暗く */
+	box-shadow:
+	  inset 0 1px 0 rgba(255,255,255,.45),
+	  inset 1px 0 0 rgba(255,255,255,.3),
+	  inset 0 -1px 0 rgba(0,0,0,.3),
+	  inset -1px 0 0 rgba(0,0,0,.15);
   }
   mark{
 	background:var(--mark-bg); color:var(--mark-ink);
