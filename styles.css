@@ -174,21 +174,28 @@
 	font-family:var(--mono); font-size:.82rem; font-weight:600;
 	color:#fff; text-decoration:none;
 	padding:2px 7px; border:1px solid var(--btn-ts); border-radius:7px;
-	background:var(--btn-ts); white-space:nowrap;
+	background-color:var(--btn-ts);
+	background-image:linear-gradient(to right, var(--accent-weak) 50%, var(--btn-ts) 50%);
+	background-size:200% 100%; background-position:right bottom; background-repeat:no-repeat;
+	white-space:nowrap;
 	font-variant-numeric:tabular-nums; line-height:1.5; margin-top:2px;
 	width:var(--seg-w); text-align:center;   /* 常に h:mm:ss 幅で固定 */
+	transition:background-position .35s ease, border-color .35s ease, color .35s ease;
   }
-  .ts:hover{border-color:var(--accent); color:var(--accent); background:var(--accent-weak)}
+  .ts:hover{border-color:var(--accent); color:var(--accent); background-position:left bottom}
   .ts:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .propose{
 	font-family:var(--sans); font-size:.74rem; font-weight:600;
 	color:#fff; cursor:pointer; white-space:nowrap;
 	padding:2px 8px; border:1px solid var(--btn-propose); border-radius:7px;
-	background:var(--btn-propose); line-height:1.5;
+	background-color:var(--btn-propose);
+	background-image:linear-gradient(to right, var(--accent-weak) 50%, var(--btn-propose) 50%);
+	background-size:200% 100%; background-position:right bottom; background-repeat:no-repeat;
+	line-height:1.5;
 	width:var(--seg-w); text-align:center;   /* タイムスタンプと同一幅 */
-	transition:border-color .15s, color .15s, background .15s;
+	transition:background-position .35s ease, border-color .35s ease, color .35s ease;
   }
-  .propose:hover{border-color:var(--accent); color:var(--accent); background:var(--accent-weak)}
+  .propose:hover{border-color:var(--accent); color:var(--accent); background-position:left bottom}
   .propose:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .snippet{font-size:.96rem; word-break:break-word}
   .speaker{
@@ -367,8 +374,4 @@
 	.about__sub{font-size:.87rem; margin:0 0 4px}
 	.about__p{font-size:.83rem; line-height:1.6; margin:0 0 7px}
 	.about__list>li{margin:0 0 12px}
-  }
-  @media (prefers-reduced-motion:reduce){
-	*{transition:none !important}
-	.boot__bar>span{animation:none; left:0; width:100%; opacity:.6}
   }
