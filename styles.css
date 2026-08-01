@@ -264,7 +264,7 @@
   .modal__backdrop{position:absolute; inset:0; background:rgba(20,8,30,.45)}
   .modal__panel{
 	position:relative; z-index:1; width:100%; max-width:560px;
-	max-height:90vh; overflow:auto;
+	max-height:90vh; max-height:90dvh; overflow:auto;
 	background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
 	padding:20px 22px 18px; box-shadow:0 18px 50px rgba(30,10,40,.22);
   }
@@ -299,7 +299,7 @@
 
   /* ---- 本サイトについて モーダル ---- */
   .modal__panel--about{
-	max-width:680px; max-height:min(86vh,820px);
+	max-width:680px; max-height:min(86vh,820px); max-height:min(86dvh,820px);
 	display:flex; flex-direction:column; overflow:hidden; padding:0;
   }
   .about__head{
@@ -359,7 +359,7 @@
 	.modal__actions{flex-wrap:wrap}
 	.modal__nav{order:2; width:100%; margin-right:0; gap:10px}
 	.modal__nav .btn--nav{flex:1}
-	.modal__panel--about{max-height:92vh}
+	.modal__panel--about{max-height:92vh; max-height:92dvh}
 	.about__head{padding:14px 16px 12px}
 	.about__body{padding:2px 16px 16px}
 	.about__h{font-size:.9rem; margin:20px 0 10px}
